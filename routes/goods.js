@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const Goods = require("../schemas/goods");
+const Cart = require("../schemas/cart");
 
 router.get("/", (req, res) => {
   res.send("this is home page");
@@ -48,13 +50,31 @@ router.get("/goods", (req, res) => {
   res.json({ goods: goods });
 });
 
-router.get("/goods/:goodsId", (req, res) => {
+router.get("/goods/:goodsId/cart", (req, res) => {
   const { goodsId } = req.params;
   const [detail] = goods.filter((goods) => goods.goodsId === Number(goodsId));
   res.json({ detail });
 });
 
-const Goods = require("../schemas/goods");
+router.get("/goods/cart", async (req, res) => {
+  const carts = await Cart.find();
+
+  const goodsIds = carts.map((cart) => cart.goodsId);
+
+  const goods = await Goods.find({ goodsId: goodsIds });
+
+  const results = carts.map((cart) => {
+    return {
+      quantity: cart.quantity,
+      goods: goods.find((item) => item.goodsId === cart.goodsId),
+    };
+  });
+  res.json({
+    cart: results,
+  });
+});
+
+
 router.post("/goods", async (req, res) => {
   const { goodsId, name, thumbnailUrl, category, price } = req.body;
 
@@ -62,8 +82,9 @@ router.post("/goods", async (req, res) => {
   if (goods.length) {
     return res
       .status(400)
-      .json({ success: false, errorMessage: "이미 있는 데이터입나다." });
+      .json({ success: false, errorMessage: "이미 있는 데이터입니다." });
   }
+
   const createdGoods = await Goods.create({
     goodsId,
     name,
@@ -75,7 +96,6 @@ router.post("/goods", async (req, res) => {
   res.json({ goods: createdGoods });
 });
 
-const Cart = require("../schemas/cart");
 router.post("/goods/:goodsId/cart", async (req, res) => {
   const { goodsId } = req.params;
   const { quantity } = req.body;
@@ -115,12 +135,12 @@ router.delete("/goods/:goodsId/cart", async (req, res) => {
 
   const existsCarts = await Cart.find({ goodsId });
 
-  if (existsCarts.length===0) {
+  if (existsCarts.length === 0) {
     res
       .status(400)
       .json({ errorMessage: "장바구니에 존재하지 않는 상품입니다." });
   }
-  
+
   if (existsCarts.length > 0) {
     await Cart.deleteOne({ goodsId });
   }
@@ -128,22 +148,6 @@ router.delete("/goods/:goodsId/cart", async (req, res) => {
   res.json({ result: "success" });
 });
 
-router.get("/goods/cart", async (req, res) => {
-  const carts = await Cart.find();
-  const goodsIds = carts.map((cart) => cart.goodsId);
 
-  const goods = await Goods.find({ goodsId: goodsIds });
-
-  const results = carts.map((cart) => {
-    return {
-      quantity: cart.quantity,
-      goods: goods.find((item) => item.goodsId === cart.goodsId),
-    };
-  });
-
-  res.json({
-    cart: results,
-  });
-});
 
 module.exports = router;
