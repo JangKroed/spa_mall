@@ -5,7 +5,7 @@ const port = 3000;
 app.use(express.json());
 
 const goodsRouter = require("./routes/goods");
-app.use("/api", [goodsRouter]);
+app.use([goodsRouter]);
 
 const connect = require("./schemas");
 connect();
