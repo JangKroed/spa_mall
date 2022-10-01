@@ -50,12 +50,6 @@ router.get("/goods", (req, res) => {
   res.json({ goods: goods });
 });
 
-router.get("/goods/:goodsId/cart", (req, res) => {
-  const { goodsId } = req.params;
-  const [detail] = goods.filter((goods) => goods.goodsId === Number(goodsId));
-  res.json({ detail });
-});
-
 router.get("/goods/cart", async (req, res) => {
   const carts = await Cart.find();
 
@@ -74,6 +68,11 @@ router.get("/goods/cart", async (req, res) => {
   });
 });
 
+router.get("/goods/:goodsId", (req, res) => {
+  const { goodsId } = req.params;
+  const [detail] = goods.filter((goods) => goods.goodsId === Number(goodsId));
+  res.json({ detail });
+});
 
 router.post("/goods", async (req, res) => {
   const { goodsId, name, thumbnailUrl, category, price } = req.body;
