@@ -7,7 +7,7 @@ const connect = () => {
      * localhost:27017에 있는 spa_mall에 접근
      */
     .connect("mongodb://localhost:27017/spa_mall")
-    // .connect("mongodb+srv://test:sparta@cluster0.hg1pk.mongodb.net/?retryWrites=true",{dbname:'spa_mall'})
+    // .connect("mongodb+srv://test:<password>@cluster0.hg1pk.mongodb.net/?retryWrites=true",{dbname:'spa_mall'})
 
     /**
      * 접근이 안되거나 에러가 났을때
