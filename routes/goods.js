@@ -70,7 +70,8 @@ router.get("/goods/cart", async (req, res) => {
 
 router.get("/goods/:goodsId", (req, res) => {
   const { goodsId } = req.params;
-  const [detail] = goods.filter((goods) => goods.goodsId === Number(goodsId));
+  
+  const [detail] = goods.filter((a) => a.goodsId === Number(goodsId));
   res.json({ detail });
 });
 

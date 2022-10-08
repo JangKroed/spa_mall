@@ -5,10 +5,10 @@ const port = 3000;
 app.use(express.json());
 
 const goodsRouter = require("./routes/goods");
-app.use([goodsRouter]);
-
 const connect = require("./schemas");
 connect();
+
+app.use([goodsRouter]);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
